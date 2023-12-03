@@ -5,7 +5,7 @@
   "version": "0.1",
   "action": {
     "default_popup": "app.html",
-    "default_icon": "icons/lhs-sampler.png"
+    "default_icon": "icons/lhs-sampler-icon.png"
   },
   "permissions": [
     "tabs"
