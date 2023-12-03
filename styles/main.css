@@ -1,0 +1,17 @@
+body {
+  height: 200px;
+  width: 400px;
+  padding: 8px;
+}
+
+.hidden {
+  display: none;
+}
+
+.transparent {
+  opacity: 0;
+}
+
+.page {
+  transition: opacity 0.2s;
+}

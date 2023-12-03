@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LHS Sampler</title>
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div id="input-page" class="page">
+      <h1>LHS Sampler</h1>
+      <p>Designate a sample size -- how many times LHS sampler should try to measure the performance of the current page</p>
+      <form id="sample-size-form">
+        <label for="sample-size">Sample size</label>
+        <input type="number" name="sample-size" id="sample-size" value="30" />
+        <button type="submit">Run sampler</button>
+      </form>
+    </div>
+    <div id="loading-page" class="page hidden transparent">
+      <h2>Sampling...</h2>
+      <div id="progress-bar">
+        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+    <div id="result-page" class="page hidden transparent">
+      <div id="desktop-result" class="result-wrapper">
+        <p>Average desktop performance score:</p>
+        <h2 id="desktop-result-score"></h2>
+      </div>
+      <div id="mobile-result" class="result-wrapper">
+        <p>Average mobile performance score:</p>
+        <h2 id="mobile-result-score"></h2>
+      </div>
+    </div>
+  </body>
+  <script src="scripts/script.js"></script>
+</html>
