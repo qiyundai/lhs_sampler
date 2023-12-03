@@ -1,7 +1,17 @@
 body {
-  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 400px;
-  padding: 8px;
+  padding: 8px 24px;
+  margin: 0;
+  background: linear-gradient(320deg, #7c84f32f, #ff4dd348, #ff9a3b52, #ff4dd348, #7c84f32f, #ff4dd348, #ff9a3b52);
+  background-size: 400% 400%;
+  animation: backgroundGradient 45s ease infinite;
+}
+
+body * {
+  font-family: 'Nova Square', Montserrat, sans-serif;
 }
 
 .hidden {
@@ -14,4 +24,61 @@ body {
 
 .page {
   transition: opacity 0.2s;
+}
+
+form .input-wrapper {
+  margin: 8px 0;
+}
+
+form #sample-url {
+  width: 100%;
+}
+
+form #sample-size {
+  width: 64px
+}
+
+form button {
+  margin: 4px 0 8px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #7C84F3;
+  color: white;
+}
+
+#loading-page #progress-bar {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  border-radius: 8px;
+  background-color: white;
+  overflow: hidden;
+  box-shadow: 0 0 10px #00000029;
+  margin-bottom: 16px;
+}
+
+#loading-page #progress-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 0%;
+  transition: max-width 0.4s;
+  background-color: #7C84F3;
+}
+
+@keyframes backgroundGradient {
+  0% {
+    background-position: 0% 50%
+  }
+
+  50% {
+    background-position: 100% 50%
+  }
+
+  100% {
+    background-position: 0% 50%
+  }
 }
