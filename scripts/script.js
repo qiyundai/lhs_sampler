@@ -59,6 +59,7 @@ async function fetchAndUpdateState(query, state) {
       state.tbtScore += json.lighthouseResult.audits["total-blocking-time"].score * 100;
       state.siVal += json.lighthouseResult.audits["speed-index"].numericValue;
       state.siScore += json.lighthouseResult.audits["speed-index"].score * 100;
+      state.fetchCounter += 1;
       resolve();
     });
   })
@@ -135,7 +136,7 @@ async function launchSampler(configs) {
     tbtScore: 0,
     siVal: 0,
     siScore: 0,
-    fetchCounter: 0,
+    fetchCounter: 1,
     targetSize: configs.size,
   }
 
@@ -144,7 +145,7 @@ async function launchSampler(configs) {
       const progressBarFill = document.getElementById('progress-bar-fill');
   
       if (progressBarFill) {
-        progressBarFill.style.maxWidth = `${((state.currentIndex + 1) / state.targetSize) * 100}%`;
+        progressBarFill.style.maxWidth = `${((state.fetchCounter + 1) / state.targetSize) * 100}%`;
       }
   
       state[key] = value;
@@ -159,7 +160,6 @@ async function launchSampler(configs) {
     usp.set('take', i);
     urlObj.search = usp.toString();
 
-    state.currentIndex = i;
     queryParams.url = encodeURIComponent(urlObj.toString());
     const query = setUpQuery(queryParams);
   
