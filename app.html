@@ -12,7 +12,10 @@
   <body>
     <div id="input-page" class="page">
       <h1>LHS Sampler</h1>
-      <p>Designate a sample size. Bigger size === longer processing time && more accurate result</p>
+      <p>
+        Designate a sample size. Bigger size === longer processing time && more
+        accurate result
+      </p>
       <form id="sample-size-form">
         <div class="input-wrapper">
           <label for="sample-url">URL:</label>
@@ -20,7 +23,14 @@
         </div>
         <div class="input-wrapper">
           <label for="sample-size">Sample size:</label>
-          <input type="number" name="sample-size" id="sample-size" value="30" min="1" max="50" />
+          <input
+            type="number"
+            name="sample-size"
+            id="sample-size"
+            value="30"
+            min="1"
+            max="50"
+          />
         </div>
         <div class="input-wrapper">
           <label for="sample-strategy">Strategy:</label>
@@ -40,9 +50,46 @@
       </div>
     </div>
     <div id="result-page" class="page hidden transparent">
-      <div id="performance-result" class="result-wrapper">
-        <p>Average <span id="strategy-placeholder"></span> performance score:</p>
-        <h2 id="average-performance-score"></h2>
+      <div class="result-wrapper">
+        <p>
+          Sampled <span id="strategy-placeholder"></span> page
+          <span id="size-placeholder"></span> times
+        </p>
+      </div>
+      <div id="perf-result" class="result-wrapper">
+        <p>Average performance score:</p>
+        <div class="result-flex-wrapper">
+          <span class="result-color-dot"></span>
+          <h2 id="average-perf-score"></h2>
+        </div>
+      </div>
+      <div id="tbt-result" class="result-wrapper">
+        <p>Average TBT:</p>
+        <div class="result-flex-wrapper">
+          <span class="result-color-dot"></span>
+          <h2 id="average-tbt-val"></h2>
+        </div>
+      </div>
+      <div id="cls-result" class="result-wrapper">
+        <p>Average CLS amount:</p>
+        <div class="result-flex-wrapper">
+          <span class="result-color-dot"></span>
+          <h2 id="average-cls-val"></h2>
+        </div>
+      </div>
+      <div id="lcp-result" class="result-wrapper">
+        <p>Average LCP:</p>
+        <div class="result-flex-wrapper">
+          <span class="result-color-dot"></span>
+          <h2 id="average-lcp-val"></h2>
+        </div>
+      </div>
+      <div id="si-result" class="result-wrapper">
+        <p>Average Speed Index:</p>
+        <div class="result-flex-wrapper">
+          <span class="result-color-dot"></span>
+          <h2 id="average-si-val"></h2>
+        </div>
       </div>
     </div>
   </body>

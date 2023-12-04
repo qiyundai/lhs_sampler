@@ -65,8 +65,33 @@ form button {
   height: 100%;
   width: 100%;
   max-width: 0%;
-  transition: max-width 0.4s;
+  transition: max-width 0.5s;
   background-color: #7C84F3;
+}
+
+#result-page .result-flex-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#result-page .result-color-dot {
+  height: 16px;
+  width: 16px;
+  border-radius: 16px;
+  box-shadow: 0 0 10px #00000029;
+}
+
+#result-page .result-color-dot.green {
+  background-color: green;
+}
+
+#result-page .result-color-dot.orange {
+  background-color: orange;
+}
+
+#result-page .result-color-dot.red {
+  background-color: red;
 }
 
 @keyframes backgroundGradient {
