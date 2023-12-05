@@ -45,6 +45,14 @@ form button {
   border-radius: 4px;
   background-color: #7C84F3;
   color: white;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+form button:hover {
+  background-color: white;
+  color: #7C84F3;
+  box-shadow: 0 0 10px #00000029;
 }
 
 #loading-page #progress-bar {

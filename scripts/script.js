@@ -80,7 +80,7 @@ async function fetchAndUpdateState(query, state) {
   })
 }
 
-function showResult(resultPackage) {
+function showResult(payload) {
   const {
     targetSize,
     perfScore,
@@ -94,7 +94,7 @@ function showResult(resultPackage) {
     siScore,
     strategy,
     formula,
-  } = resultPackage;
+  } = payload;
   togglePages('#loading-page', '#result-page');
 
   const resultPage = document.getElementById('result-page');
@@ -187,47 +187,27 @@ async function launchSampler(configs) {
   
     resultsFetched.push(fetchAndUpdateState(query, stateProxy));
     
-    await forceWait(500);
+    // throttle
+    await forceWait(1000);
   }
 
   Promise.all(resultsFetched).then(async () => {
+    const { default: calculateResult } = await import('./formulae.js');
+    // wait for transition
     await forceWait(500);
-    const resultPackage = {
+    const payload = {
       targetSize: state.targetSize,
       strategy: configs.strategy,
       formula: configs.formula,
     };
 
-    if (configs.formula === 'average') {
-      resultPackage.perfScore = sum(state.perfScore) / configs.size;
-      resultPackage.clsVal = sum(state.clsVal) / configs.size;
-      resultPackage.clsScore = sum(state.clsScore) / configs.size;
-      resultPackage.lcpVal = sum(state.lcpVal) / configs.size;
-      resultPackage.lcpScore = sum(state.lcpScore) / configs.size;
-      resultPackage.tbtVal = sum(state.tbtVal) / configs.size;
-      resultPackage.tbtScore = sum(state.tbtScore) / configs.size;
-      resultPackage.siVal = sum(state.siVal) / configs.size;
-      resultPackage.siScore = sum(state.siScore) / configs.size;
-    }
-
-    if (configs.formula === 'median') {
-      resultPackage.perfScore = median(state.perfScore);
-      resultPackage.clsVal = median(state.clsVal);
-      resultPackage.clsScore = median(state.clsScore);
-      resultPackage.lcpVal = median(state.lcpVal);
-      resultPackage.lcpScore = median(state.lcpScore);
-      resultPackage.tbtVal = median(state.tbtVal);
-      resultPackage.tbtScore = median(state.tbtScore);
-      resultPackage.siVal = median(state.siVal);
-      resultPackage.siScore = median(state.siScore);
-    }
-
-    showResult(resultPackage);
+    calculateResult(state, payload);
+    showResult(payload);
   })
 }
 
 async function initSamplerForm() {
-  const tabsObject = await chrome.tabs.query({active: true})
+  const tabsObject = await chrome.tabs.query({ active: true })
   const currentTabUrl = tabsObject[0].url;
 
   if (!currentTabUrl) {
