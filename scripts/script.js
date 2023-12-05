@@ -8,6 +8,21 @@ function setUpQuery(params) {
   return query;
 }
 
+function median(numbers) {
+  const sorted = Array.from(numbers).sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+
+  if (sorted.length % 2 === 0) {
+      return (sorted[middle - 1] + sorted[middle]) / 2;
+  }
+
+  return sorted[middle];
+}
+
+function sum(numbers) {
+  return Array.from(numbers).reduce((partialSum, a) => partialSum + a, 0);
+}
+
 function hidePage(selector) {
   return new Promise((resolve) => {
     const page = document.querySelector(selector);
@@ -50,15 +65,15 @@ async function fetchAndUpdateState(query, state) {
     fetch(query)
     .then(response => response.json())
     .then(json => {
-      state.perfScore += json.lighthouseResult.categories.performance.score * 100;
-      state.clsVal += json.lighthouseResult.audits["cumulative-layout-shift"].numericValue * 100;
-      state.clsScore += json.lighthouseResult.audits["cumulative-layout-shift"].score * 100;
-      state.lcpVal += json.lighthouseResult.audits["largest-contentful-paint"].numericValue;
-      state.lcpScore += json.lighthouseResult.audits["largest-contentful-paint"].score * 100;
-      state.tbtVal += json.lighthouseResult.audits["total-blocking-time"].numericValue;
-      state.tbtScore += json.lighthouseResult.audits["total-blocking-time"].score * 100;
-      state.siVal += json.lighthouseResult.audits["speed-index"].numericValue;
-      state.siScore += json.lighthouseResult.audits["speed-index"].score * 100;
+      state.perfScore.push(json.lighthouseResult.categories.performance.score * 100);
+      state.clsVal.push(json.lighthouseResult.audits["cumulative-layout-shift"].numericValue * 100);
+      state.clsScore.push(json.lighthouseResult.audits["cumulative-layout-shift"].score * 100);
+      state.lcpVal.push(json.lighthouseResult.audits["largest-contentful-paint"].numericValue);
+      state.lcpScore.push(json.lighthouseResult.audits["largest-contentful-paint"].score * 100);
+      state.tbtVal.push(json.lighthouseResult.audits["total-blocking-time"].numericValue);
+      state.tbtScore.push(json.lighthouseResult.audits["total-blocking-time"].score * 100);
+      state.siVal.push(json.lighthouseResult.audits["speed-index"].numericValue);
+      state.siScore.push(json.lighthouseResult.audits["speed-index"].score * 100);
       state.fetchCounter += 1;
       resolve();
     });
@@ -78,6 +93,7 @@ function showResult(resultPackage) {
     siVal,
     siScore,
     strategy,
+    formula,
   } = resultPackage;
   togglePages('#loading-page', '#result-page');
 
@@ -97,6 +113,8 @@ function showResult(resultPackage) {
   const lcpDot = resultPage.querySelector('#lcp-result .result-color-dot');
   const siDot = resultPage.querySelector('#si-result .result-color-dot');
 
+  const formulaPHs = resultPage.querySelectorAll('.output-formula');
+
   sizePH.textContent = targetSize;
   strategyPH.textContent = strategy;
   perfScoreEl.textContent = `${Math.floor(perfScore)}`;
@@ -110,6 +128,10 @@ function showResult(resultPackage) {
 
   dots.forEach((dot, index) => {
     dot.classList.add(getDotClass(scores[index]));
+  })
+
+  formulaPHs.forEach((span) => {
+    span.textContent = formula;
   })
 }
 
@@ -127,16 +149,16 @@ async function launchSampler(configs) {
   }
 
   const state = {
-    perfScore: 0,
-    clsVal: 0,
-    clsScore: 0,
-    lcpVal: 0,
-    lcpScore: 0,
-    tbtVal: 0,
-    tbtScore: 0,
-    siVal: 0,
-    siScore: 0,
-    fetchCounter: 1,
+    perfScore: [],
+    clsVal: [],
+    clsScore: [],
+    lcpVal: [],
+    lcpScore: [],
+    tbtVal: [],
+    tbtScore: [],
+    siVal: [],
+    siScore: [],
+    fetchCounter: 0,
     targetSize: configs.size,
   }
 
@@ -168,22 +190,38 @@ async function launchSampler(configs) {
     await forceWait(500);
   }
 
-  Promise.all(resultsFetched).then(() => {
+  Promise.all(resultsFetched).then(async () => {
+    await forceWait(500);
     const resultPackage = {
       targetSize: state.targetSize,
-      perfScore: state.perfScore / configs.size,
-      clsVal: state.clsVal / configs.size,
-      clsScore: state.clsScore / configs.size,
-      lcpVal: state.lcpVal / configs.size,
-      lcpScore: state.lcpScore / configs.size,
-      tbtVal: state.tbtVal / configs.size,
-      tbtScore: state.tbtScore / configs.size,
-      siVal: state.siVal / configs.size,
-      siScore: state.siScore / configs.size,
-      fetchCounter: state.fetchCounter / configs.size,
       strategy: configs.strategy,
+      formula: configs.formula,
+    };
+
+    if (configs.formula === 'average') {
+      resultPackage.perfScore = sum(state.perfScore) / configs.size;
+      resultPackage.clsVal = sum(state.clsVal) / configs.size;
+      resultPackage.clsScore = sum(state.clsScore) / configs.size;
+      resultPackage.lcpVal = sum(state.lcpVal) / configs.size;
+      resultPackage.lcpScore = sum(state.lcpScore) / configs.size;
+      resultPackage.tbtVal = sum(state.tbtVal) / configs.size;
+      resultPackage.tbtScore = sum(state.tbtScore) / configs.size;
+      resultPackage.siVal = sum(state.siVal) / configs.size;
+      resultPackage.siScore = sum(state.siScore) / configs.size;
     }
-  
+
+    if (configs.formula === 'median') {
+      resultPackage.perfScore = median(state.perfScore);
+      resultPackage.clsVal = median(state.clsVal);
+      resultPackage.clsScore = median(state.clsScore);
+      resultPackage.lcpVal = median(state.lcpVal);
+      resultPackage.lcpScore = median(state.lcpScore);
+      resultPackage.tbtVal = median(state.tbtVal);
+      resultPackage.tbtScore = median(state.tbtScore);
+      resultPackage.siVal = median(state.siVal);
+      resultPackage.siScore = median(state.siScore);
+    }
+
     showResult(resultPackage);
   })
 }
@@ -204,6 +242,7 @@ async function initSamplerForm() {
   const urlInput = samplerForm.querySelector('input#sample-url');
   const sizeInput = samplerForm.querySelector('input#sample-size');
   const strategyInput = samplerForm.querySelector('#sample-strategy');
+  const formulaInput = samplerForm.querySelector('#sample-formula');
 
   urlInput.value = currentTabUrl;
   samplerForm.addEventListener('submit', async (e) => {
@@ -212,6 +251,7 @@ async function initSamplerForm() {
       url: urlInput.value,
       size: sizeInput.value,
       strategy: strategyInput.value,
+      formula: formulaInput.value,
     });
   })
 }

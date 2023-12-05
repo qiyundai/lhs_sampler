@@ -39,6 +39,13 @@
             <option value="DESKTOP">Desktop</option>
           </select>
         </div>
+        <div class="input-wrapper">
+          <label for="sample-formula">Output:</label>
+          <select name="strategy" id="sample-formula">
+            <option value="average" selected>Average</option>
+            <option value="median">Median</option>
+          </select>
+        </div>
         <button type="submit">Run sampler</button>
       </form>
     </div>
@@ -57,35 +64,35 @@
         </p>
       </div>
       <div id="perf-result" class="result-wrapper">
-        <p>Average performance score:</p>
+        <p><span class="output-formula"></span> performance score:</p>
         <div class="result-flex-wrapper">
           <span class="result-color-dot"></span>
           <h2 id="average-perf-score"></h2>
         </div>
       </div>
       <div id="tbt-result" class="result-wrapper">
-        <p>Average TBT:</p>
+        <p><span class="output-formula"></span> TBT:</p>
         <div class="result-flex-wrapper">
           <span class="result-color-dot"></span>
           <h2 id="average-tbt-val"></h2>
         </div>
       </div>
       <div id="cls-result" class="result-wrapper">
-        <p>Average CLS amount:</p>
+        <p><span class="output-formula"></span> CLS amount:</p>
         <div class="result-flex-wrapper">
           <span class="result-color-dot"></span>
           <h2 id="average-cls-val"></h2>
         </div>
       </div>
       <div id="lcp-result" class="result-wrapper">
-        <p>Average LCP:</p>
+        <p><span class="output-formula"></span> LCP:</p>
         <div class="result-flex-wrapper">
           <span class="result-color-dot"></span>
           <h2 id="average-lcp-val"></h2>
         </div>
       </div>
       <div id="si-result" class="result-wrapper">
-        <p>Average Speed Index:</p>
+        <p><span class="output-formula"></span> Speed Index:</p>
         <div class="result-flex-wrapper">
           <span class="result-color-dot"></span>
           <h2 id="average-si-val"></h2>
