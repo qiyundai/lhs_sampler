@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LHS Sampler",
-  "description": "A simple plugin that helps generate an averaged LHS of a page given a sample size",
-  "version": "0.3",
+  "description": "A simple plugin that helps generate the LHS of a page given a sample size.",
+  "version": "0.4",
   "action": {
     "default_popup": "app.html",
     "default_icon": "icons/lhs-sampler-icon.png"

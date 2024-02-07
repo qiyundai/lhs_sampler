@@ -60,22 +60,44 @@ function togglePages(hideSelector, showSelector) {
   })
 }
 
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Fetch error:', error.message);
+    return null;
+  }
+}
+
+
 async function fetchAndUpdateState(query, state) {
   return new Promise((resolve) => {
-    fetch(query)
-    .then(response => response.json())
+    fetchData(query)
     .then(json => {
-      state.perfScore.push(json.lighthouseResult.categories.performance.score * 100);
-      state.clsVal.push(json.lighthouseResult.audits["cumulative-layout-shift"].numericValue * 100);
-      state.clsScore.push(json.lighthouseResult.audits["cumulative-layout-shift"].score * 100);
-      state.lcpVal.push(json.lighthouseResult.audits["largest-contentful-paint"].numericValue);
-      state.lcpScore.push(json.lighthouseResult.audits["largest-contentful-paint"].score * 100);
-      state.tbtVal.push(json.lighthouseResult.audits["total-blocking-time"].numericValue);
-      state.tbtScore.push(json.lighthouseResult.audits["total-blocking-time"].score * 100);
-      state.siVal.push(json.lighthouseResult.audits["speed-index"].numericValue);
-      state.siScore.push(json.lighthouseResult.audits["speed-index"].score * 100);
-      state.fetchCounter += 1;
-      resolve();
+      if (json) {
+        state.perfScore.push(json.lighthouseResult.categories.performance.score * 100);
+        state.clsVal.push(json.lighthouseResult.audits["cumulative-layout-shift"].numericValue * 100);
+        state.clsScore.push(json.lighthouseResult.audits["cumulative-layout-shift"].score * 100);
+        state.lcpVal.push(json.lighthouseResult.audits["largest-contentful-paint"].numericValue);
+        state.lcpScore.push(json.lighthouseResult.audits["largest-contentful-paint"].score * 100);
+        state.tbtVal.push(json.lighthouseResult.audits["total-blocking-time"].numericValue);
+        state.tbtScore.push(json.lighthouseResult.audits["total-blocking-time"].score * 100);
+        state.siVal.push(json.lighthouseResult.audits["speed-index"].numericValue);
+        state.siScore.push(json.lighthouseResult.audits["speed-index"].score * 100);
+        state.fetchCounter += 1;
+        resolve();
+      } else {
+        state.targetSize -= 1;
+        resolve();
+      }
     });
   })
 }
@@ -141,6 +163,12 @@ function forceWait(ms) {
   })
 }
 
+function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+}
+
 async function launchSampler(configs) {
   togglePages('#input-page', '#loading-page');
 
@@ -187,8 +215,8 @@ async function launchSampler(configs) {
   
     resultsFetched.push(fetchAndUpdateState(query, stateProxy));
     
-    // throttle
-    await forceWait(1000);
+    // randomized throttle
+    await forceWait(1000 + getRandomInt(0, 500));
   }
 
   Promise.all(resultsFetched).then(async () => {
@@ -211,7 +239,7 @@ async function initSamplerForm() {
   const currentTabUrl = tabsObject[0].url;
 
   if (!currentTabUrl) {
-    document.body.textContent = "I think I'm a little lost...";
+    document.body.textContent = "I think I'm a little lost...shall we go to an actual web page?";
     return;
   }
 
